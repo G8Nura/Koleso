@@ -13,9 +13,6 @@ class UserOut(BaseModel):
     email: EmailStr
     is_admin: bool
 
-    class Config:
-        from_attributes = True
-
 
 class Token(BaseModel):
     access_token: str
@@ -25,6 +22,6 @@ class Token(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
-
+    
     class Config:
-        from_attributes = True
+        orm_mode = True

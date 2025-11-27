@@ -1,14 +1,15 @@
-from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
-from sqlalchemy.orm import relationship 
-from src.database import Base 
+from sqlalchemy import ForeignKey
+from sqlalchemy import UniqueConstraint
+from sqlalchemy.orm import relationship, mapped_column, Mapped 
+from src.models import Base 
 
 
 class Favourite(Base):
     __tablename__ = "favourites"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    car_id = Column(Integer, ForeignKey("cars.id"))
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    car_id: Mapped[int] = mapped_column(ForeignKey("cars.id"))
 
     user = relationship("User", back_populates="favourites")
     car = relationship("Car", back_populates="favourites")
