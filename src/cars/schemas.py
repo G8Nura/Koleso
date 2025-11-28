@@ -19,6 +19,5 @@ class CarOut(CarBase):
     status: str
     owner_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
         

@@ -1,15 +1,18 @@
 from sqlalchemy import create_engine 
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv 
-import os 
+from .config import settings
+from .models import Base
+from src.auth.models import User
+from src.cars.models import Car
+from src.favourites.models import Favourite
 
-load_dotenv()
-
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(
     DATABASE_URL,
     connect_args={"check_same_thread": False} 
 )
+
+Base.metadata.create_all(bind=engine)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
