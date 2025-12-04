@@ -1,8 +1,8 @@
-"""create initial tables
+"""init
 
-Revision ID: 7e69a74bfd16
+Revision ID: 3c765e0638f9
 Revises: 
-Create Date: 2025-11-23 22:03:56.016029
+Create Date: 2025-12-04 18:34:50.192404
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '7e69a74bfd16'
+revision: str = '3c765e0638f9'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,7 +26,9 @@ def upgrade() -> None:
     sa.Column('username', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('password_hash', sa.String(), nullable=False),
-    sa.Column('is_admin', sa.Boolean(), nullable=True),
+    sa.Column('is_admin', sa.Boolean(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
@@ -40,16 +42,20 @@ def upgrade() -> None:
     sa.Column('brand', sa.String(), nullable=False),
     sa.Column('model', sa.String(), nullable=False),
     sa.Column('year', sa.Integer(), nullable=False),
-    sa.Column('status', sa.String(), nullable=True),
-    sa.Column('owner_id', sa.Integer(), nullable=True),
+    sa.Column('status', sa.Enum('PENDING', 'APPROVED', 'REJECTED', name='carstatus'), nullable=False),
+    sa.Column('owner_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_cars_id'), 'cars', ['id'], unique=False)
     op.create_table('favourites',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('car_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('car_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['car_id'], ['cars.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id'),
